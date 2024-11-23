@@ -24,6 +24,16 @@
                     "update": "invert('y', y())"
                 }
             ]
+        },
+        {
+          "name": "flash",
+          "value": 0,
+          "on": [
+            {
+              "events": {"type": "timer", "throttle": 300},
+              "update": "flash + 1"
+            }
+          ]
         }
     ],
     "data": [
@@ -95,7 +105,7 @@
             },
             "range": [
                 100,
-                2000
+                1000
             ]
         },
         {
@@ -154,18 +164,20 @@
                         "scale": "size",
                         "field": "tps"
                     },
-                    "fill": {
-                        "scale": "scale_color",
-                        "field": "status"
-                    },
-                    "fillOpacity": {
-                        "value": 0.8
-                    },
                     "stroke": {
                         "value": "white"
                     },
                     "strokeWidth": {
                         "value": 1
+                    },
+                    "tooltip": {
+                        "signal": "{'Service': datum.service, 'TPS': datum.tps, 'P95 (ms)': datum.p95}"
+                    }
+                },
+                "update": {
+                    "fill": {"scale": "scale_color", "field": "status"},
+                    "fillOpacity": {
+                        "signal": "datum.status === 'critical' ? 0.2 + 0.8 * (flash % 2) : 0.8"
                     },
                     "tooltip": {
                         "signal": "{'Service': datum.service, 'TPS': datum.tps, 'P95 (ms)': datum.p95}"
