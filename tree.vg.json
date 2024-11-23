@@ -13,6 +13,16 @@
     {
       "name": "separation",
       "value": false
+    },
+    {
+      "name": "flash",
+      "value": 0,
+      "on": [
+        {
+          "events": {"type": "timer", "throttle": 300},
+          "update": "flash + 1"
+        }
+      ]
     }
   ],
 
@@ -170,13 +180,16 @@
       "from": {"data": "tree"},
       "encode": {
         "enter": {
-          "size": {"value": 150},
+          "size": {"value": 250},
           "stroke": {"value": "#fff"},
           "strokeWidth": {"value": 1}
         },
         "update": {
           "x": {"field": "x"},
           "y": {"field": "y"},
+          "fillOpacity": {
+            "signal": "datum.status === 'critical' ? 0.2 + 0.8 * (flash % 2) : 0.8"
+          },
           "fill": {
             "signal": "datum.status ? scale('status_color', datum.status) : '#34495e'"
           },
