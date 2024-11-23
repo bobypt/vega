@@ -1,44 +1,99 @@
 {
-  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-  "width": 300,
-  "height": 200,
-  "title": "Service Performance Metrics",
-  "data": {
-    "values": [
-      {"service": "Service A", "tps": 100, "p95": 250},
-      {"service": "Service B", "tps": 150, "p95": 180},
-      {"service": "Service C", "tps": 80, "p95": 350},
-      {"service": "Service D", "tps": 200, "p95": 150},
-      {"service": "Service E", "tps": 120, "p95": 200}
-    ]
-  },
-  "mark": {
-    "type": "point",
-    "filled": true,
-    "size": 100
-  },
-  "encoding": {
-    "x": {
-      "field": "tps",
-      "type": "quantitative",
-      "title": "Transactions Per Second",
-      "axis": {"grid": true}
-    },
-    "y": {
-      "field": "p95",
-      "type": "quantitative",
-      "title": "95th Percentile Response Time (ms)",
-      "axis": {"grid": true}
-    },
-    "color": {
-      "field": "service",
-      "type": "nominal",
-      "title": "Service"
-    },
-    "tooltip": [
-      {"field": "service", "title": "Service"},
-      {"field": "tps", "title": "TPS"},
-      {"field": "p95", "title": "P95 (ms)"}
+    "$schema": "https://vega.github.io/schema/vega/v5.json",
+    "width": 300,
+    "height": 200,
+    "padding": 5,
+    "title": "Service Performance Metrics",
+  
+    "data": [
+        {
+          "name": "source",
+          "values": [
+            {"service": "Service A", "tps": 100, "p95": 250, "status": "healthy"},
+            {"service": "Service B", "tps": 150, "p95": 180, "status": "healthy"},
+            {"service": "Service C", "tps": 80, "p95": 350, "status": "critical"},
+            {"service": "Service D", "tps": 200, "p95": 150, "status": "healthy"},
+            {"service": "Service E", "tps": 120, "p95": 200, "status": "warn"}
+          ]
+        }
+      ],
+  
+    "scales": [
+      {
+        "name": "x",
+        "type": "linear",
+        "domain": {"data": "source", "field": "tps"},
+        "range": "width",
+        "nice": true,
+        "zero": true
+      },
+      {
+        "name": "y",
+        "type": "linear",
+        "domain": {"data": "source", "field": "p95"},
+        "range": "height",
+        "nice": true,
+        "zero": true
+      },
+      {
+        "name": "size",
+        "type": "linear",
+        "domain": {"data": "source", "field": "tps"},
+        "range": [100, 2000]
+      },
+      {
+        "name": "color",
+        "type": "ordinal",
+        "domain": ["healthy", "warn", "critical"],
+        "range": ["#2ecc71", "#f1c40f", "#e74c3c"]
+      }
+    ],
+  
+    "axes": [
+      {
+        "scale": "x",
+        "grid": true,
+        "orient": "bottom",
+        "title": "Transactions Per Second"
+      },
+      {
+        "scale": "y",
+        "grid": true,
+        "orient": "left",
+        "title": "95th Percentile Response Time (ms)"
+      }
+    ],
+  
+    "legends": [
+      {
+        "fill": "color",
+        "title": "Service",
+        "symbolSize": 100
+      }
+    ],
+  
+    "marks": [
+      {
+        "type": "symbol",
+        "from": {"data": "source"},
+        "encode": {
+          "enter": {
+            "x": {"scale": "x", "field": "tps"},
+            "y": {"scale": "y", "field": "p95"},
+            "size": {"scale": "size", "field": "tps"},
+            "fill": {"scale": "color", "field": "status"},
+            "fillOpacity": {"value": 0.8},
+            "stroke": {"value": "white"},
+            "strokeWidth": {"value": 1},
+            "tooltip": {
+                "signal": "{'Service': datum.service, 'TPS': datum.tps, 'P95 (ms)': datum.p95}"
+            }
+          },
+          "hover": {
+            "fillOpacity": {"value": 1}
+          }
+        }
+      }
     ]
   }
-}
+  
