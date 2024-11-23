@@ -1,0 +1,44 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "width": 300,
+  "height": 200,
+  "title": "Service Performance Metrics",
+  "data": {
+    "values": [
+      {"service": "Service A", "tps": 100, "p95": 250},
+      {"service": "Service B", "tps": 150, "p95": 180},
+      {"service": "Service C", "tps": 80, "p95": 350},
+      {"service": "Service D", "tps": 200, "p95": 150},
+      {"service": "Service E", "tps": 120, "p95": 200}
+    ]
+  },
+  "mark": {
+    "type": "point",
+    "filled": true,
+    "size": 100
+  },
+  "encoding": {
+    "x": {
+      "field": "tps",
+      "type": "quantitative",
+      "title": "Transactions Per Second",
+      "axis": {"grid": true}
+    },
+    "y": {
+      "field": "p95",
+      "type": "quantitative",
+      "title": "95th Percentile Response Time (ms)",
+      "axis": {"grid": true}
+    },
+    "color": {
+      "field": "service",
+      "type": "nominal",
+      "title": "Service"
+    },
+    "tooltip": [
+      {"field": "service", "title": "Service"},
+      {"field": "tps", "title": "TPS"},
+      {"field": "p95", "title": "P95 (ms)"}
+    ]
+  }
+}
