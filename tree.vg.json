@@ -19,8 +19,28 @@
       "value": 0,
       "on": [
         {
-          "events": {"type": "timer", "throttle": 300},
-          "update": "flash + 1"
+          "events": {"type": "timer", "throttle": 500},
+          "update": "(flash + 1) % 2"
+        }
+      ]
+    },
+    {
+      "name": "tick",
+      "value": 0,
+      "on": [
+        {
+          "events": {"type": "timer", "throttle": 2000},
+          "update": "tick + 1"
+        }
+      ]
+    },
+    {
+      "name": "randomMetrics",
+      "on": [
+        {
+          "events": {"signal": "tick"},
+         "update": "{'Auth Service': {tps: round(50 + random() * 200),p95: round(200 + random() * 300),status: random() < 0.2 ? 'critical' : (random() < 0.4 ? 'warn' : 'healthy')},'User Service': {tps: round(50 + random() * 100),p95: round(100 + random() * 200),status: random() < 0.1 ? 'critical' : (random() < 0.3 ? 'warn' : 'healthy')},'Product Service': {tps: round(100 + random() * 200),p95: round(100 + random() * 200),status: random() < 0.1 ? 'critical' : (random() < 0.3 ? 'warn' : 'healthy')},'Order Service': {tps: round(50 + random() * 100),p95: round(200 + random() * 400),status: random() < 0.15 ? 'critical' : (random() < 0.4 ? 'warn' : 'healthy')},'User DB': {tps: round(300 + random() * 400),p95: round(20 + random() * 60),status: random() < 0.05 ? 'critical' : (random() < 0.2 ? 'warn' : 'healthy')},'Auth Cache': {tps: round(800 + random() * 400),p95: round(2 + random() * 8),status: random() < 0.05 ? 'critical' : (random() < 0.15 ? 'warn' : 'healthy')},'Product DB': {tps: round(200 + random() * 400),p95: round(20 + random() * 50),status: random() < 0.05 ? 'critical' : (random() < 0.2 ? 'warn' : 'healthy')},'Product Cache': {tps: round(1500 + random() * 1000),p95: round(1 + random() * 5),status: random() < 0.05 ? 'critical' : (random() < 0.15 ? 'warn' : 'healthy')},'Order DB': {tps: round(200 + random() * 200),p95: round(50 + random() * 100),status: random() < 0.1 ? 'critical' : (random() < 0.3 ? 'warn' : 'healthy')},'Payment Service': {tps: round(30 + random() * 40),p95: round(300 + random() * 400),status: random() < 0.1 ? 'critical' : (random() < 0.3 ? 'warn' : 'healthy')},'Notification Service': {tps: round(20 + random() * 40),p95: round(100 + random() * 200),status: random() < 0.05 ? 'critical' : (random() < 0.2 ? 'warn' : 'healthy')},'Email Queue': {tps: round(50 + random() * 100),p95: round(20 + random() * 60),status: random() < 0.05 ? 'critical' : (random() < 0.15 ? 'warn' : 'healthy')},'SMS Queue': {tps: round(40 + random() * 80),p95: round(20 + random() * 50),status: random() < 0.05 ? 'critical' : (random() < 0.15 ? 'warn' : 'healthy')}}"
+    
         }
       ]
     }
@@ -33,97 +53,73 @@
         {"service": "API Gateway", "parent": null},
         {
           "service": "Auth Service", 
-          "parent": "API Gateway", 
-          "tps": 150, 
-          "p95": 350,
-          "status": "critical"
+          "parent": "API Gateway"
         },
         {
           "service": "User Service", 
-          "parent": "API Gateway", 
-          "tps": 90, 
-          "p95": 150,
-          "status": "healthy"
+          "parent": "API Gateway"
         },
         {
           "service": "Product Service", 
-          "parent": "API Gateway", 
-          "tps": 200, 
-          "p95": 180,
-          "status": "healthy"
+          "parent": "API Gateway"
         },
         {
           "service": "Order Service", 
-          "parent": "API Gateway", 
-          "tps": 80, 
-          "p95": 400,
-          "status": "warn"
+          "parent": "API Gateway"
         },
         {
           "service": "User DB", 
-          "parent": "User Service", 
-          "tps": 500, 
-          "p95": 50,
-          "status": "healthy"
+          "parent": "User Service"
         },
         {
           "service": "Auth Cache", 
-          "parent": "Auth Service", 
-          "tps": 1000, 
-          "p95": 5,
-          "status": "healthy"
+          "parent": "Auth Service"
         },
         {
           "service": "Product DB", 
-          "parent": "Product Service", 
-          "tps": 400, 
-          "p95": 45,
-          "status": "healthy"
+          "parent": "Product Service"
         },
         {
           "service": "Product Cache", 
-          "parent": "Product Service", 
-          "tps": 2000, 
-          "p95": 3,
-          "status": "healthy"
+          "parent": "Product Service"
         },
         {
           "service": "Order DB", 
-          "parent": "Order Service", 
-          "tps": 300, 
-          "p95": 100,
-          "status": "warn"
+          "parent": "Order Service"
         },
         {
           "service": "Payment Service", 
-          "parent": "Order Service", 
-          "tps": 50, 
-          "p95": 500,
-          "status": "healthy"
+          "parent": "Order Service"
         },
         {
           "service": "Notification Service", 
-          "parent": "Order Service", 
-          "tps": 40, 
-          "p95": 200,
-          "status": "healthy"
+          "parent": "Order Service"
         },
         {
           "service": "Email Queue", 
-          "parent": "Notification Service", 
-          "tps": 100, 
-          "p95": 50,
-          "status": "healthy"
+          "parent": "Notification Service"
         },
         {
           "service": "SMS Queue", 
-          "parent": "Notification Service", 
-          "tps": 80, 
-          "p95": 45,
-          "status": "healthy"
+          "parent": "Notification Service"
         }
       ],
       "transform": [
+        {
+          "type": "formula",
+          "expr": "datum.service != 'API Gateway' ? randomMetrics[datum.service].tps : null",
+          "as": "tps"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.service != 'API Gateway' ? randomMetrics[datum.service].p95 : null",
+          "as": "p95"
+        },
+        {
+          "type": "formula",
+          "expr": "datum.service != 'API Gateway' ? randomMetrics[datum.service].status : null",
+          "as": "status"
+        },
         {
           "type": "stratify",
           "key": "service",
@@ -180,22 +176,26 @@
       "from": {"data": "tree"},
       "encode": {
         "enter": {
-          "size": {"value": 250},
+          "size": {"value": 150},
           "stroke": {"value": "#fff"},
           "strokeWidth": {"value": 1}
         },
         "update": {
           "x": {"field": "x"},
           "y": {"field": "y"},
-          "fillOpacity": {
-            "signal": "datum.status === 'critical' ? 0.2 + 0.8 * (flash % 2) : 0.8"
-          },
           "fill": {
             "signal": "datum.status ? scale('status_color', datum.status) : '#34495e'"
           },
+          "fillOpacity": {
+            "signal": "datum.status === 'critical' ? 0.4 + (flash * 0.6) : 1"
+          },
           "tooltip": {
-            "signal": "{'Service': datum.service, 'TPS': datum.tps, 'P95 (ms)': datum.p95}"
+            "signal": "{'Service': datum.service,'Status': datum.status || 'N/A','Transactions/sec': datum.tps ? format(datum.tps, ',.0f') : 'N/A','P95 Latency': datum.p95 ? format(datum.p95, ',.0f') + ' ms' : 'N/A','Parent': datum.parent || 'None','Dependencies': datum.children ? datum.children.length : 0}"
           }
+        },
+        "hover": {
+          "strokeWidth": {"value": 2},
+          "stroke": {"value": "#333"}
         }
       }
     },
@@ -213,7 +213,10 @@
           "y": {"field": "y"},
           "dy": {"value": -15},
           "align": {"value": "center"},
-          "text": {"field": "service"}
+          "text": {"field": "service"},
+          "opacity": {
+            "signal": "datum.status === 'critical' ? 0.4 + (flash * 0.6) : 1"
+          }
         }
       }
     },
@@ -232,6 +235,9 @@
           "align": {"value": "center"},
           "text": {
             "signal": "datum.tps != null ? 'TPS: ' + format(datum.tps, ',') + ' P95: ' + format(datum.p95, ',') + 'ms' : ''"
+          },
+          "opacity": {
+            "signal": "datum.status === 'critical' ? 0.4 + (flash * 0.6) : 1"
           }
         }
       }
