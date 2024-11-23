@@ -1,0 +1,227 @@
+{
+     "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "width": 800,
+  "height": 400,
+  "padding": 5,
+  "autosize": "none",
+
+  "signals": [
+    {
+      "name": "layout",
+      "value": "tidy"
+    },
+    {
+      "name": "separation",
+      "value": false
+    }
+  ],
+
+  "data": [
+    {
+      "name": "tree",
+      "values": [
+        {"service": "API Gateway", "parent": null},
+        {
+          "service": "Auth Service", 
+          "parent": "API Gateway", 
+          "tps": 150, 
+          "p95": 350,
+          "status": "critical"
+        },
+        {
+          "service": "User Service", 
+          "parent": "API Gateway", 
+          "tps": 90, 
+          "p95": 150,
+          "status": "healthy"
+        },
+        {
+          "service": "Product Service", 
+          "parent": "API Gateway", 
+          "tps": 200, 
+          "p95": 180,
+          "status": "healthy"
+        },
+        {
+          "service": "Order Service", 
+          "parent": "API Gateway", 
+          "tps": 80, 
+          "p95": 400,
+          "status": "warn"
+        },
+        {
+          "service": "User DB", 
+          "parent": "User Service", 
+          "tps": 500, 
+          "p95": 50,
+          "status": "healthy"
+        },
+        {
+          "service": "Auth Cache", 
+          "parent": "Auth Service", 
+          "tps": 1000, 
+          "p95": 5,
+          "status": "healthy"
+        },
+        {
+          "service": "Product DB", 
+          "parent": "Product Service", 
+          "tps": 400, 
+          "p95": 45,
+          "status": "healthy"
+        },
+        {
+          "service": "Product Cache", 
+          "parent": "Product Service", 
+          "tps": 2000, 
+          "p95": 3,
+          "status": "healthy"
+        },
+        {
+          "service": "Order DB", 
+          "parent": "Order Service", 
+          "tps": 300, 
+          "p95": 100,
+          "status": "warn"
+        },
+        {
+          "service": "Payment Service", 
+          "parent": "Order Service", 
+          "tps": 50, 
+          "p95": 500,
+          "status": "healthy"
+        },
+        {
+          "service": "Notification Service", 
+          "parent": "Order Service", 
+          "tps": 40, 
+          "p95": 200,
+          "status": "healthy"
+        },
+        {
+          "service": "Email Queue", 
+          "parent": "Notification Service", 
+          "tps": 100, 
+          "p95": 50,
+          "status": "healthy"
+        },
+        {
+          "service": "SMS Queue", 
+          "parent": "Notification Service", 
+          "tps": 80, 
+          "p95": 45,
+          "status": "healthy"
+        }
+      ],
+      "transform": [
+        {
+          "type": "stratify",
+          "key": "service",
+          "parentKey": "parent"
+        },
+        {
+          "type": "tree",
+          "method": {"signal": "layout"},
+          "size": [{"signal": "height"}, {"signal": "width - 100"}],
+          "separation": {"signal": "separation"},
+          "as": ["y", "x", "depth", "children"]
+        }
+      ]
+    },
+    {
+      "name": "links",
+      "source": "tree",
+      "transform": [
+        {"type": "treelinks"},
+        {
+          "type": "linkpath",
+          "orient": "horizontal",
+          "shape": "diagonal"
+        }
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "status_color",
+      "type": "ordinal",
+      "domain": ["healthy", "warn", "critical"],
+      "range": ["#2ecc71", "#f1c40f", "#e74c3c"]
+    }
+  ],
+
+  "marks": [
+    {
+      "type": "path",
+      "from": {"data": "links"},
+      "encode": {
+        "enter": {
+          "stroke": {"value": "#ccc"},
+          "strokeWidth": {"value": 1}
+        },
+        "update": {
+          "path": {"field": "path"}
+        }
+      }
+    },
+    {
+      "type": "symbol",
+      "from": {"data": "tree"},
+      "encode": {
+        "enter": {
+          "size": {"value": 150},
+          "stroke": {"value": "#fff"},
+          "strokeWidth": {"value": 1}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "fill": {
+            "signal": "datum.status ? scale('status_color', datum.status) : '#34495e'"
+          },
+          "tooltip": {
+            "signal": "{'Service': datum.service, 'TPS': datum.tps, 'P95 (ms)': datum.p95}"
+          }
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "tree"},
+      "encode": {
+        "enter": {
+          "fontSize": {"value": 11},
+          "baseline": {"value": "middle"},
+          "fontWeight": {"value": "bold"}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "dy": {"value": -15},
+          "align": {"value": "center"},
+          "text": {"field": "service"}
+        }
+      }
+    },
+    {
+      "type": "text",
+      "from": {"data": "tree"},
+      "encode": {
+        "enter": {
+          "fontSize": {"value": 10},
+          "baseline": {"value": "middle"}
+        },
+        "update": {
+          "x": {"field": "x"},
+          "y": {"field": "y"},
+          "dy": {"value": 5},
+          "align": {"value": "center"},
+          "text": {
+            "signal": "datum.tps != null ? 'TPS: ' + format(datum.tps, ',') + ' P95: ' + format(datum.p95, ',') + 'ms' : ''"
+          }
+        }
+      }
+    }
+  ]
+}
